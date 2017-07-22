@@ -1,0 +1,25 @@
+#  This file is part of sslibev.
+#
+#  sslibev is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This file is default for Debian packaging. See also
+#  /etc/default/sslibev for environment variables.
+
+[Unit]
+Description=sslibev Default Server Service
+After=network.target
+
+[Service]
+Type=forking
+User=root
+Group=nogroup
+LimitNOFILE=32768
+PIDFile=/var/run/sslibev.pid
+ExecStart=ROOT/start.sh
+
+[Install]
+WantedBy=multi-user.target
+

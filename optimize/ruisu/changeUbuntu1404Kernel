@@ -1,0 +1,47 @@
+#!/bin/bash
+if (($EUID != 0));then
+    echo "Need root privilege!"
+    exit 1
+fi
+apt-get install openssh-server -y
+./enableRootSSH.sh
+service ssh restart
+
+if [ -z "$(apt-cache search linux-image-extra-3.13.0-24)" ];then
+    echo "Only Support ubuntu 14.04"
+    exit 1
+fi
+
+if dpkg -l | grep linux-image | grep -q '3.13.0-24';then
+    echo "Already 3.13.0-24"
+    exit 1
+fi
+
+
+#install kernel
+echo "install linux-image-extra-3.13.0-24-generic"
+apt-get install linux-image-extra-3.13.0-24-generic -y
+if (($?!=0));then
+    echo 'Install kernel: "linux-image-extra-3.13.0-24-generic" failed!'
+    exit 1
+fi
+
+#delete old kernel
+apt-get -y purge linux-image-$(uname -r) linux-image-extra-$(uname -r)
+
+
+currentKernels=$(dpkg -l | grep linux-image | grep -v linux-image-generic | grep -v 3.13.0-24 | awk '{print $2}')
+echo "currentKernels: $currentKernels"
+oldIFS=$IFS
+IFS=$'\n'
+echo "purge old kernels"
+for eachKernel in $currentKernels;do
+    apt-get -y purge $eachKernel
+done
+IFS=$oldIFS
+
+echo "update-grub"
+update-grub
+
+echo "reboot"
+reboot
