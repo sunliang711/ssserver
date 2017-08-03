@@ -1,18 +1,17 @@
 #!/bin/bash
 shopt -s expand_aliases
+
 proxy="$1"
-if [ -n "$proxy" ];then
-    if ! echo "$proxy" | grep -q 'socks5://';then
-        proxy="socks5://$proxy"
-    fi
+if [[ -n $proxy ]];then
     echo "Using socks5 proxy: $proxy"
+    alias curl="curl -s --socks5 $proxy"
+    proxyIP=$(curl ip.cn)
+    if [[ -z $proxyIP ]];then
+        echo "But the proxy does not work"
+        exit 1
+    fi
     git config --global http.proxy "$proxy"
     git config --global https.proxy "$proxy"
-    alias curl="curl --socks5 $proxy"
-else
-    echo "Recommend to use socks5 proxy."
-    echo "Usage: $(basename $0) socks5://xxxx:1080"
-    sleep 5
 fi
 
 ROOT=~/build-ss-libev
@@ -21,7 +20,6 @@ sodiumVer=1.0.12
 mbedtlsVer=2.5.1
 pcreVer=8.40
 libevVer=4.24
-cd "$ROOT"
 
 tool(){
     apt-get update
@@ -34,19 +32,19 @@ tool(){
 
 #compile mbedtls
 mbedtls(){
+    cd "$ROOT"
     echo "Downloading mbedtls..."
     curl  https://tls.mbed.org/download/mbedtls-${mbedtlsVer}-gpl.tgz -O
     echo "Extracting mbedtls..."
     tar xf mbedtls*tgz
     cd mbedtls*
     LDFLAGS=-static make DESTDIR=$outputdir/mbedtls install
-    cd -
 }
 
 
 #compile pcre
 pcre(){
-
+    cd "$ROOT"
     echo "Downloading pcre..."
     curl https://ftp.pcre.org/pub/pcre/pcre-${pcreVer}.tar.gz -O || { echo "Download pcre source failed!";exit 1; }
     echo "Extracting pcre..."
@@ -60,7 +58,7 @@ pcre(){
 
 #compile libsodium
 libsodium(){
-
+    cd "$ROOT"
     echo "Downloading libsodium..."
     curl  https://download.libsodium.org/libsodium/releases/libsodium-${sodiumVer}.tar.gz -O || { echo "Download libsodium source failed!";exit 1;}
     echo "Extract libsodium..."
@@ -74,7 +72,7 @@ libsodium(){
 
 #compile libev
 libev(){
-
+    cd "$ROOT"
     echo "Downloading libev..."
     git clone https://github.com/enki/libev || { echo "Download libev failed!"; exit 1; }
     cd libev
@@ -86,7 +84,7 @@ libev(){
 
 #compile libudns
 libudns(){
-
+    cd "$ROOT"
     echo "Downloading libudns..."
     git clone https://github.com/shadowsocks/libudns || { echo "Download libudns failed!";exit 1; }
     cd libudns
@@ -99,6 +97,7 @@ libudns(){
 
 #compile shadowsocks-libev
 shadowsocks-libev(){
+    cd "$ROOT"
     echo "Downloading shadowsocks-libev..."
     git clone https://github.com/shadowsocks/shadowsocks-libev.git || { echo "Download shadowsocks-libev failed!"; exit 1; }
     cd shadowsocks-libev
@@ -112,6 +111,7 @@ shadowsocks-libev(){
 
 #compile simple-obfs
 simple-obfs(){
+    cd "$ROOT"
     echo "Downloading simple-obfs"
     git clone https://github.com/shadowsocks/simple-obfs || { echo "Download simple-obfs failed"; exit 1; }
     cd simple-obfs
@@ -127,12 +127,12 @@ simple-obfs(){
 stripBin(){
     find $outputdir/shadowsocks-libev/bin ! -name "ss-nat" -type f | xargs strip
 }
-# tool
-# mbedtls
-# pcre
-# libsodium
-# libev
-# libudns
-# shadowsocks-libev
-# simple-obfs
+tool
+mbedtls
+pcre
+libsodium
+libev
+libudns
+shadowsocks-libev
+simple-obfs
 stripBin
