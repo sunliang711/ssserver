@@ -1,4 +1,5 @@
 #!/bin/bash
+export PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin
 if [[ ! -x /usr/local/bin/rulesManager ]];then
     echo "Can not find rulesManger,not install iptables servie?"
     exit 1
@@ -9,9 +10,9 @@ echo "sslibev enabled ports: $ports"
 echo "$ports" | while read record;do
     port=$(echo "$record" | awk -F'|' '{print $1}')
     udpRelay=$(echo "$record" | awk -F'|' '{print $2}')
-    /usr/local/bin/rulesManager.sh addPluginPort tcp $port
+    rulesManager.sh enable tcp $port
     if (($udpRelay ==1));then
-        /usr/local/bin/rulesManager.sh addPluginPort udp $port
+        rulesManager.sh enable udp $port
     fi
 done
 
