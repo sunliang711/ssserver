@@ -1,4 +1,8 @@
 #!/bin/bash
+if [[ ! -x /usr/local/bin/rulesManager ]];then
+    echo "Can not find rulesManger,not install iptables servie?"
+    exit 1
+fi
 ports=$(sqlite3 /opt/sslibev/db "select port,udpRelay from config where enabled=1;")
 echo "sslibev enabled ports: $ports"
 
