@@ -10,9 +10,9 @@ echo "sslibev enabled ports: $ports"
 echo "$ports" | while read record;do
     port=$(echo "$record" | awk -F'|' '{print $1}')
     udpRelay=$(echo "$record" | awk -F'|' '{print $2}')
-    rulesManager.sh enable tcp $port
+    rulesManager.sh add tcp $port
     if (($udpRelay ==1));then
-        rulesManager.sh enable udp $port
+        rulesManager.sh add udp $port
     fi
 done
 
