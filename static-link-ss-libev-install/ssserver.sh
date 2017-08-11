@@ -8,7 +8,7 @@ list(){
 }
 add(){
     if (( $#<3 ));then
-        echo "usage: add port password method [owner] [trafficLimit] [udp-relay:1 or 0]"
+        echo "usage: add port password method [owner] [trafficLimit] [udp-relay:1 or 0] [fast-open: 1 or 0]"
         exit 1
     fi
     port=$1
@@ -17,7 +17,8 @@ add(){
     owner=${4:-nobody}
     trafficLimit=${5:-100G}
     udpRelay=${6:-1}
-    sqlite3 "$db" "insert into config(port,password,method,owner,trafficLimit,udpRelay,fastOpen,enabled) values($port,\"$password\",\"$method\",\"$owner\",\"$trafficLimit\",$udpRelay,1,1);" || { echo "add failed!"; exit 1; }
+    fastOpen=${7:-0}
+    sqlite3 "$db" "insert into config(port,password,method,owner,trafficLimit,udpRelay,fastOpen,enabled) values($port,\"$password\",\"$method\",\"$owner\",\"$trafficLimit\",$udpRelay,$fastOpen,1);" || { echo "add failed!"; exit 1; }
 }
 
 del(){
