@@ -5,7 +5,7 @@ cd ${thisScriptDir}
 root=/opt/sslibev
 db=$root/db
 #TODO serviceFileDir may be difference on many OSes
-serviceFileDir=/lib/systemd/system
+serviceFileDir=/etc/systemd/system
 
 check(){
     if ! command -v sqlite3 >/dev/null 2>&1;then
