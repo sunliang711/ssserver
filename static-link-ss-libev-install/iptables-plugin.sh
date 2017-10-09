@@ -1,6 +1,6 @@
 #!/bin/bash
 export PATH=/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin
-if [[ ! -x /usr/local/bin/rulesManager ]];then
+if [[ ! -x /usr/local/bin/rulesManager.sh ]];then
     echo "Can not find rulesManger,not install iptables servie?"
     exit 1
 fi
