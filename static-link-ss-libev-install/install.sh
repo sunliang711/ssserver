@@ -7,6 +7,8 @@ db=$root/db
 #TODO serviceFileDir may be difference on many OSes
 serviceFileDir=/etc/systemd/system
 
+#must install rng-tools after run better.sh and ruisu
+apt install rng-tools -y
 check(){
     if ! command -v sqlite3 >/dev/null 2>&1;then
         echo "Error: need sqlite3 support!"
