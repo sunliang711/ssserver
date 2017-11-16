@@ -10,6 +10,7 @@ serviceFileDir=/etc/systemd/system
 #must install rng-tools after run better.sh and ruisu
 apt install rng-tools -y
 check(){
+    apt-get install -y sqlite3 >/dev/null 2>&1
     if ! command -v sqlite3 >/dev/null 2>&1;then
         echo "Error: need sqlite3 support!"
         exit 1
