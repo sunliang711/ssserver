@@ -11,9 +11,10 @@ cp -v "$limitfile" "${limitfile}.bak"
 echo "* soft nofile $limit" >> "$limitfile"
 echo "* hard nofile $limit" >> "$limitfile"
 
-#tested on debian
-/sbin/modprobe tcp_hybla && echo tcp_hybla > /etc/modules-load.d/shadowsocks.conf
+##tested on debian
+#/sbin/modprobe tcp_hybla && echo tcp_hybla > /etc/modules-load.d/shadowsocks.conf
 
+#TODO eth0 below may be changed
 ctlfile=/etc/sysctl.d/local.conf
 cat > $ctlfile <<EOF
 fs.file-max = 51200
@@ -45,7 +46,7 @@ net.core.rmem_default = 8388608
 net.core.rmem_max = 67108864
 net.core.wmem_max = 67108864
 EOF
-if sysctl net.ipv4.tcp_available_congestion_control | grep -q hybla;then
-	echo 'net.ipv4.tcp_congestion_control = hybla' >>$ctlfile	
-fi
+#if sysctl net.ipv4.tcp_available_congestion_control | grep -q hybla;then
+	#echo 'net.ipv4.tcp_congestion_control = hybla' >>$ctlfile	
+#fi
 sysctl -p
